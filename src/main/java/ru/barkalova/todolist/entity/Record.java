@@ -2,7 +2,7 @@ package ru.barkalova.todolist.entity;
 
 
 import jakarta.persistence.*;
-import org.springframework.stereotype.Component;
+
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -11,7 +11,8 @@ import java.util.GregorianCalendar;
 @Table(name="RecordShema.RecordTable")
 public class Record {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "record_generator")
+    @SequenceGenerator(name="record_generator", sequenceName = "record_seq", allocationSize = 1)
     @Column(name="record_id")
     private int id;
 
@@ -32,16 +33,17 @@ public class Record {
     }
 
     public Record(String name, Calendar deadline, boolean isCompleted) {
+
         this.name = name;
         this.deadline = deadline;
         this.isCompleted = isCompleted;
     }
-//    public Record(int id, String name, Calendar deadline, boolean isCompleted) {
-//        this.id = id;
-//        this.name = name;
-//        this.deadline = deadline;
-//        this.isCompleted = isCompleted;
-//    }
+    public Record(int id, String name, Calendar deadline, boolean isCompleted) {
+        this.id = id;
+        this.name = name;
+        this.deadline = deadline;
+        this.isCompleted = isCompleted;
+    }
 
 
     public int getId() {

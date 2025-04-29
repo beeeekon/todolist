@@ -9,6 +9,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 //
 //урок https://youtu.be/5ePo08sqcpk?si=gaELlfLKUn7c-qyn
 //https://github.com/NeilAlishev/SpringCourse/tree/master
+//
+//создание sql скрипта в resources
 @SpringBootApplication
 public class TodolistApplication {
 

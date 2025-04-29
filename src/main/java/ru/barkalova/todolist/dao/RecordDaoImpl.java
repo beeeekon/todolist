@@ -70,9 +70,15 @@ public class RecordDaoImpl implements RecordDao {
 
     @Override
     public void save(Record record) {
-        jdbcTemplate.update("insert into \"RecordSchema\".\"RecordTable\" VALUES(?, ?, ?)",
+//        jdbcTemplate.update("insert " +
+//                        "into \"RecordSchema\".\"RecordTable\" " +
+//                        "(record_name, record_deadline, record_is_completed) " +
+//                        "VALUES(?, ?, ?)",
+//                record.getName(), record.getDeadline(), record.isCompleted());
+        jdbcTemplate.update("insert into \"RecordSchema\".\"RecordTable\" " +
+                        "(record_id, record_name, record_deadline, record_is_completed) " +
+                        "VALUES(nextval('record_seq'), ?, ?, ?)",
                 record.getName(), record.getDeadline(), record.isCompleted());
-
     }
 
     @Override

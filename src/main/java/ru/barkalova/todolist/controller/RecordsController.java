@@ -12,7 +12,10 @@ import org.springframework.web.bind.annotation.*;
 import ru.barkalova.todolist.entity.Record;
 import ru.barkalova.todolist.service.RecordService;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 
@@ -44,29 +47,47 @@ public class RecordsController{
         return recordService.showAll();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/getById/{id}")
     public Record getById(@PathVariable("id") int id, Model model){
         model.addAttribute("recordById",recordService.getById(id));
         return recordService.getById(id);
     }
 
-    @GetMapping("/{name}")
+    @GetMapping("/getByName/{name}")
     public List<Record> getByName(@PathVariable("name") String name){
         return recordService.getByName(name);
     }
 
-    @GetMapping("/{calendar}")
-    public List<Record> getByCalendar(@PathVariable("deadline") Calendar deadline){
-        return recordService.getByCalendar(deadline);
+//    @GetMapping("/getByCalendar/{deadline}")
+//    public List<Record> getByCalendar(@PathVariable("deadline") Calendar deadline){
+//        return recordService.getByCalendar(deadline);
+//    }
+    @GetMapping("/getByCalendar/{calendarString}")
+    public List<Record> getByCalendar(@PathVariable("calendarString") String calendarString) {
+        // Определите формат даты (должен соответствовать формату в URL)
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME; // Пример: "2023-10-27T10:00:00"
+
+        try {
+            LocalDateTime localDateTime = LocalDateTime.parse(calendarString, formatter);
+
+            Calendar deadline = GregorianCalendar.from(localDateTime.atZone(java.time.ZoneId.systemDefault()));
+            //Преобразование LocalDateTime в Calendar
+
+            return recordService.getByCalendar(deadline);
+        } catch (Exception e) {
+            // Обработка ошибки преобразования даты
+            throw new IllegalArgumentException("Неверный формат даты. Ожидается: " + formatter.toString(), e);
+        }
     }
 
-    @GetMapping("/{isCompleted}")
+
+    @GetMapping("/getByIsCompleted/{isCompleted}")
     public List<Record> getByIsCompleted(@PathVariable("isCompleted") boolean isCompleted){
         return recordService.getByIsCompleted(isCompleted);
     }
 
-    @PostMapping()
-    public String create(@ModelAttribute("record") @Valid Record record,
+    @PostMapping("/post/save")
+    public String create( @RequestBody @Valid Record record,
                          BindingResult bindingResult) {
         if (bindingResult.hasErrors())
             return "record dont save sorry";
@@ -75,8 +96,8 @@ public class RecordsController{
         return "record save done";
     }
 
-    @PatchMapping("/{id}")
-    public String update(@ModelAttribute("record") @Valid Record record,
+    @PatchMapping("/update/{id}")
+    public String update(@RequestBody @Valid Record record,
                          BindingResult bindingResult, @PathVariable("id") int id) {
         if (bindingResult.hasErrors())
             return "record dont update";
@@ -85,24 +106,26 @@ public class RecordsController{
         return "record update done";
     }
 
-    @PatchMapping("/{id}/{isCompleted}")
-    public String updateIsCompleted(@ModelAttribute("record") @Valid Record record,
+    @PatchMapping("/post/{id}/{isCompleted}")
+    public String updateIsCompleted(@RequestBody @Valid Record record,
                                     BindingResult bindingResult,
                                     @PathVariable("id") int id,
                                     @PathVariable("isCompleted") boolean isCompleted
                                     )
     {
         if (bindingResult.hasErrors())
-            return "record dont update";
+            return "record dont update isCompleted";
 
         recordService.updateIsCompleted(id, isCompleted);
         return "record update done! isCompleted="+isCompleted;
     }
 
-    @DeleteMapping("/{id}")
-    public String delete(@PathVariable("id") int id) {
+    @DeleteMapping("/delete/{id}")
+    public String delete(@PathVariable("id") int id){//, BindingResult bindingResult) {
+//        if (bindingResult.hasErrors())
+//            return "record dont update";
         recordService.delete(id);
-        return "redirect:/people";
+        return "record delete done!";
     }
 
 
