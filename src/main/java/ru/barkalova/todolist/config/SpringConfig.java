@@ -38,6 +38,7 @@ public class SpringConfig implements WebMvcConfigurer {
        // templateResolver.setPrefix("/todolist/src/main/webapp/WEB-INF/views/");
         templateResolver.setPrefix("/templates/");
         templateResolver.setSuffix(".html");
+
         return templateResolver;
     }
 

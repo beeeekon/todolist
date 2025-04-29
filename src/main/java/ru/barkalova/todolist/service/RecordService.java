@@ -32,6 +32,9 @@ public class RecordService {
     public List<Record> getByCalendar(Calendar deadline){
         return recordRepository.getByCalendar(deadline);
     }
+    public List<Record> getByIsCompleted(boolean isCompleted){
+        return recordRepository.getByIsCompleted(isCompleted);
+    }
 
     public void save(Record record){
         recordRepository.save(record);

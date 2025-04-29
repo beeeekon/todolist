@@ -4,7 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+
+import ru.barkalova.todolist.config.HibernateSessionFactoryUtil;
 import ru.barkalova.todolist.entity.Record;
+
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 import java.util.Calendar;
 import java.util.List;
@@ -12,8 +17,8 @@ import java.util.List;
 @Component
 public class RecordDaoImpl implements RecordDao {
     private final JdbcTemplate jdbcTemplate;
-    private static int RECORD_COUNT;
-    //надо бы заменить на sequence по хорошему
+    //private static int RECORD_COUNT;
+
 
     @Autowired
     public RecordDaoImpl(JdbcTemplate jdbcTemplate) {
@@ -23,15 +28,20 @@ public class RecordDaoImpl implements RecordDao {
     @Override
     public List<Record> showAll() {
         return jdbcTemplate.query("select * from \"RecordSchema\".\"RecordTable\"",
-                new BeanPropertyRowMapper<>(Record.class));
+                new RecordMapper());
     }
 
     @Override
     public Record getById(int id) {
-        return jdbcTemplate.query("select * from \"RecordSchema\".\"RecordTable\" " +
+        List<Record> records= jdbcTemplate.query("select * from \"RecordSchema\".\"RecordTable\" " +
                         "where record_id=?",
-                        new Object[]{id},
-                        new BeanPropertyRowMapper<>(Record.class)).stream().findAny().orElse(null);
+                new Object[]{id},
+                new RecordMapper());
+        Record record = new Record();
+        if(records.size()==1)
+            record= records.get(0);
+        return record;
+       // return HibernateSessionFactoryUtil.getSessionFactory().openSession().get(Record.class, id);
     }
 
     @Override
@@ -39,7 +49,7 @@ public class RecordDaoImpl implements RecordDao {
         return jdbcTemplate.query("select * from \"RecordSchema\".\"RecordTable\" " +
                         "where record_name=?",
                 new Object[]{name},
-                new BeanPropertyRowMapper<>(Record.class));
+                new RecordMapper());
     }
 
     @Override
@@ -47,7 +57,7 @@ public class RecordDaoImpl implements RecordDao {
         return jdbcTemplate.query("select * from \"RecordSchema\".\"RecordTable\" " +
                         "where record_deadline=?",
                 new Object[]{deadline},
-                new BeanPropertyRowMapper<>(Record.class));
+                new RecordMapper());
     }
 
     @Override
@@ -55,13 +65,13 @@ public class RecordDaoImpl implements RecordDao {
         return jdbcTemplate.query("select * from \"RecordSchema\".\"RecordTable\" " +
                         "where record_is_completed=?",
                 new Object[]{isCompleted},
-                new BeanPropertyRowMapper<>(Record.class));
+                new RecordMapper());
     }
 
     @Override
     public void save(Record record) {
-        jdbcTemplate.update("insert into \"RecordSchema\".\"RecordTable\" VALUES(?, ?, ?, ?)",
-                ++RECORD_COUNT,record.getName(), record.getDeadline(), record.isCompleted());
+        jdbcTemplate.update("insert into \"RecordSchema\".\"RecordTable\" VALUES(?, ?, ?)",
+                record.getName(), record.getDeadline(), record.isCompleted());
 
     }
 
