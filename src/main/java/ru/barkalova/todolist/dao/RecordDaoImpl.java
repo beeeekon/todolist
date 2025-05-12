@@ -5,11 +5,11 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
-import ru.barkalova.todolist.config.HibernateSessionFactoryUtil;
+//import ru.barkalova.todolist.config.HibernateSessionFactoryUtil;
 import ru.barkalova.todolist.entity.Record;
 
-import org.hibernate.Session;
-import org.hibernate.Transaction;
+//import org.hibernate.Session;
+//import org.hibernate.Transaction;
 
 import java.util.Calendar;
 import java.util.List;
@@ -70,11 +70,6 @@ public class RecordDaoImpl implements RecordDao {
 
     @Override
     public void save(Record record) {
-//        jdbcTemplate.update("insert " +
-//                        "into \"RecordSchema\".\"RecordTable\" " +
-//                        "(record_name, record_deadline, record_is_completed) " +
-//                        "VALUES(?, ?, ?)",
-//                record.getName(), record.getDeadline(), record.isCompleted());
         jdbcTemplate.update("insert into \"RecordSchema\".\"RecordTable\" " +
                         "(record_id, record_name, record_deadline, record_is_completed) " +
                         "VALUES(nextval('record_seq'), ?, ?, ?)",

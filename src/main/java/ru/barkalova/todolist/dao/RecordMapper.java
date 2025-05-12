@@ -5,11 +5,11 @@ import org.springframework.jdbc.core.RowMapper;
 import ru.barkalova.todolist.entity.Record;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Time;
+//import java.sql.Time;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
+//import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
+//import java.util.Date;
 import java.util.GregorianCalendar;
 
 public class RecordMapper implements RowMapper<Record> {

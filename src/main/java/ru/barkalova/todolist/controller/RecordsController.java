@@ -58,10 +58,6 @@ public class RecordsController{
         return recordService.getByName(name);
     }
 
-//    @GetMapping("/getByCalendar/{deadline}")
-//    public List<Record> getByCalendar(@PathVariable("deadline") Calendar deadline){
-//        return recordService.getByCalendar(deadline);
-//    }
     @GetMapping("/getByCalendar/{calendarString}")
     public List<Record> getByCalendar(@PathVariable("calendarString") String calendarString) {
         // Определите формат даты (должен соответствовать формату в URL)
